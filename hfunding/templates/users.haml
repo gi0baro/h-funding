@@ -1,0 +1,26 @@
+- extend 'layout.haml'
+
+.content
+    .container
+        .row
+            .col-lg-12
+            %h1 #{ T("Bakers") }
+            %br
+            %table.table.table-hover
+                %thead
+                    %tr
+                        %th #{ T("Firstname") }
+                        %th #{ T("Lastname") }
+                        %th #{ T("Mail") }
+                        %th #{ T("Projects backed") }
+                        %th #{ T("Total backed") }
+                %tbody
+                - for user in users
+                    %tr
+                        %td
+                            %a{href:"{{=url('main.profile', user.id)}}"}
+                                = user.first_name
+                        %td #{ user.last_name }
+                        %td #{ user.email }
+                        %td #{ user.backed_campaigns() }
+                        %td #{ str(user.backed_amount())+"euros" }

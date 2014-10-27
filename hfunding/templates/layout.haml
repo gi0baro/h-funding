@@ -1,0 +1,71 @@
+!!! 5
+%html
+    %head
+        %title {{=current.response.meta.title or ''}}
+        %meta{name: "viewport", content:"width=device-width, initial-scale=1"}
+
+        - include_meta
+        - block head
+        - end
+
+        - include_helpers
+        - include_bs3
+
+        - assets 'css_all'
+        - assets 'js_libs'
+
+    ---
+        current_user = current.session.auth.user if current.session.auth else None
+        T = current.T
+
+    %body
+        %nav.navbar.navbar-default.navbar-fixed-top{role: "navigation", style: "color:white;"}
+            .container-fluid
+                .navbar-header
+                    %button.navbar-toggle{type: "button", data-toggle:"collapse", data-target:"#bs-example-navbar-collapse-1"}
+                        %span.sr-only Toggle navigation
+                        %span.icon-bar
+                        %span.icon-bar
+                        %span.icon-bar
+                    %a.navbar-brand{href:"/"}
+                        %img{src:"{{=url('static', 'images/logo.png')}}"}
+                / Collect the nav links, forms, and other content for toggling
+                #bs-example-navbar-collapse-1.collapse.navbar-collapse
+                    %ul.nav.navbar-nav.nav-pills.pull-right
+                        %li
+                            %a{href:"{{=url('campaigns.discover')}}"} Discover
+                        %li
+                            %a{href:"{{=url('main.users')}}"} Bakers
+                        %li
+                            %a{href:"{{=url('main.stats')}}"} Stats
+                        - if current_user
+                            %li.dropdown.pull-right
+                                %a.dropdown-toggle{href:"#", data-toggle:"dropdown"}
+                                    {{=current_user.first_name}}
+                                    %b.caret
+                                %ul.dropdown-menu
+                                    %li
+                                        .col-xs-6.col-xs-offset-3
+                                            %br
+                                            %img.img-circle.img-responsive{src:"{{=url('static', 'images/default-profile.png')}}"}
+                                            %br
+                                    %li
+                                        %a{href:"{{=url('main.profile', current_user.id)}}"} Profile
+                                    %li
+                                        %a{href:"{{=url('campaigns.owned')}}"} My campaigns
+                                    %li
+                                        %a{href:"{{=url('donations.owned')}}"} My donations
+                                    %li.divider
+                                    %li
+                                        %a{href:"{{=url('main.account', 'logout')}}"} Sign out
+                        - else
+                            %li
+                                %a{href:"{{=url('main.account', 'register')}}"} Sign up
+                            %li
+                                %a{href:"{{=url('main.account', 'login')}}"} Sign in
+        - block center
+        - include
+        - end
+        %footer
+            %hr
+            %p copyright Company 2014

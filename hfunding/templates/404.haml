@@ -1,0 +1,44 @@
+!!! 5
+%html
+    %head
+        %title {{=current.response.meta.title or ''}}
+        %meta{name: "viewport", content:"width=device-width, initial-scale=1"}
+
+        - include_meta
+        - block head
+        - end
+
+        - include_helpers
+        - include_bs3
+
+        - assets 'css_all'
+        - assets 'js_libs'
+    %body
+        %nav.navbar.navbar-default.navbar-fixed-top{role: "navigation", style: "color:white;"}
+            .container-fluid
+                .navbar-header
+                    %button.navbar-toggle{type: "button", data-toggle:"collapse", data-target:"#bs-example-navbar-collapse-1"}
+                        %span.sr-only Toggle navigation
+                        %span.icon-bar
+                        %span.icon-bar
+                        %span.icon-bar
+                    %a.navbar-brand{href:"/"}
+                        %img{src:"{{=url('static', 'images/logo.png')}}"}
+                / Collect the nav links, forms, and other content for toggling
+                #bs-example-navbar-collapse-1.collapse.navbar-collapse
+                    %ul.nav.navbar-nav.nav-pills.pull-right
+                        %li
+                            %a{href:"{{=url('campaigns.discover')}}"} Discover
+                        %li
+                            %a{href:"{{=url('main.users')}}"} Bakers
+                        %li
+                            %a{href:"{{=url('main.stats')}}"} Stats
+        .content
+            .container
+                .row
+                    .col-lg-12
+                    %h1 404
+                    %br
+        %footer
+            %hr
+            %p copyright Company 2014

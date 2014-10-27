@@ -1,0 +1,29 @@
+- extend 'layout.haml'
+
+.jumbotron
+    .container{align: "center"}
+        %h1.splash-head
+            %img{src: "{{=url('static', 'images/logo.png')}}"}
+        %br
+        %br
+        %a.btn.btn-default.btn-lg{href: "{{=url('campaigns.new')}}", role: "button", style: "color:#1F8DD6;"} Start project
+        %br
+        %br
+
+.container
+    .row
+        .col-xs-12.col-sm-4
+            %h2 Heading
+            %p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+            %p
+              %a.btn.btn-default{href: "#", role: "button"} View details »
+        .col-xs-12.col-sm-4
+            %h2 Heading
+            %p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+            %p
+              %a.btn.btn-default{href: "#", role: "button"} View details »
+        .col-xs-12.col-sm-4
+            %h2 Heading
+            %p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+            %p
+              %a.btn.btn-default{href: "#", role: "button"} View details »

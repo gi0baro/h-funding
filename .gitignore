@@ -1,0 +1,17 @@
+*.class
+*.pyc
+*.pyo
+Thumbs.db
+.DS_Store
+.project
+.pydevproject
+/.settings/*
+*.sublime-project
+*.sublime-workspace
+hfunding/uploads/*
+hfunding/private/*
+hfunding/logs/*.log
+hfunding/static/gen/*
+hfunding/static/bs3/*
+hfunding/static/.webassets-cache/*
+*.haml.html

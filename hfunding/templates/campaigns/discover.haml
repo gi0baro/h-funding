@@ -1,0 +1,72 @@
+- extend 'layout.haml'
+
+.content
+    .container
+        .row
+            - if showing != 'all'
+                .col-sm-12{align: "center"}
+                    %h1 Discover Campaigns
+                    %p.lead Passion, ideas, and ambition abound. Start exploring!
+                    %h4.pull-left
+                        %a.btn.btn-default.btn-md{href: "{{=url('campaigns.all')}}"}
+                            Show all campaigns
+                        %a.btn.btn-success.btn-md{href: "{{=url('campaigns.new')}}"}
+                            >New campaign
+            - else
+                .col-sm-12{align: "center"}
+                    %h1 Discover All Campaigns
+                    %p.lead Passion, ideas, and ambition abound. Start exploring!
+                    %h4.pull-left
+                        %a.btn.btn-default.btn-md{href: "{{=url('campaigns.discover')}}"} Discover campaigns
+                        %a.btn.btn-success.btn-md{href: "{{=url('campaigns.new')}}"} New campaign
+
+          %br
+          :javascript
+              var container = document.querySelector('#container');
+              var msnry = new Masonry( container, {
+                // options
+                columnWidth: container.querySelector('.grid-sizer'),
+                itemSelector: '.item'
+              });
+
+            .row
+                #container.js-masonry
+                    .grid-sizer
+                        - for campaign in campaigns
+                            - pledged = campaign.pledged()
+                            - perc = round(float(pledged)/campaign.goal*100)
+                            .card.item{align: "left"}
+                                %h4
+                                    = campaign.title
+                                %h6.color-light-grey
+                                    = "by "+str(campaign.owner.first_name)+" "+str(campaign.owner.last_name)
+                                %p.color-light-grey
+                                    = campaign.description
+                                %hr.divider
+                                .row{align: "center"}
+                                    .col-xs-4
+                                        %h6.color-light-grey Donated
+                                        %h3
+                                            = str(pledged)+" €"
+                                    - if pledged >= campaign.goal
+                                        .col-xs-4.alert.alert-success
+                                            %h6.color-light-grey Funded
+                                            %h3
+                                                = str(perc)+" %"
+                                    - else
+                                        .col-xs-4
+                                            %h6.color-light-grey Funded
+                                            %h3
+                                                = str(perc)+" %"
+                                    .col-xs-4
+                                        %h6.color-light-grey Days
+                                        %h3
+                                            = (campaign.end-campaign.start).days
+                                .row{align: "center"}
+                                    .col-xs-12
+                                        .progress
+                                            .progress-bar{role: "progressbar", 'aria-valuenow': "60", 'aria-valuemin': "0", 'aria-valuemax': "100", style: "width: {{=perc}}%;"}
+                                                %span.sr-only
+                                                    = str(perc)+" %"
+                                                    Complete
+                                %a{href: "{{=url('campaigns.detail', campaign.id)}}"} Details

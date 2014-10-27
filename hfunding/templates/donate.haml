@@ -1,0 +1,13 @@
+- extend 'layout.haml'
+
+.content
+    .container
+        .row
+            .col-lg-6.col-lg-offset-3
+                - if not msg
+                    %h1 Donate to campaign
+                    %h2
+                        = campaign.title
+                    =form
+                - else
+                    =msg

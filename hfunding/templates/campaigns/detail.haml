@@ -1,0 +1,168 @@
+- extend 'layout.haml'
+
+---
+    donations = campaign.donations()
+    costs = campaign.costs()
+    pledged = campaign.pledged()
+    spended = campaign.spended()
+    perc = round(float(pledged)/campaign.goal*100)
+
+.content
+    .container
+        %br
+        .row
+            .col-lg-12
+        %br
+        .row
+            .col-sm-12{align: "center"}
+            %h2
+                = campaign.title
+            %h4.color-light-grey
+                Created by
+                = campaign.owner.first_name+" "+campaign.owner.last_name}}
+            .row{align: "center"}
+                .col-xs-10.col-xs-offset-1
+                .progress
+                    - if perc >= 100
+                        .progress-bar.progress-bar-success{role: "progressbar", 'aria-valuenow': "60", 'aria-valuemin': "0", 'aria-valuemax': "100", style: "width: 100%;"}
+                            %span.sr-only
+                              = str(perc)+" %"
+                              Complete
+                    - else
+                        .progress-bar{role: "progressbar", 'aria-valuenow': "60", 'aria-valuemin': "0", 'aria-valuemax': "100", style: "width: {{=perc}}%;"}
+                            %span.sr-only
+                              = str(perc)+" %"
+                              Complete
+            %br
+            .card
+                .row
+                    .col-sm-6.col-xs-12{align: "center"}
+                        .col-xs-12{align: "center"}
+                            %img.img-thumbnail.img-responsive{src: "{{=url('static', 'images/default-project.png')}}"}
+                            %br
+                            %h2 Description
+                            %p.color-light-grey
+                                = campaign.description
+                        .row
+                            .col-xs-4
+                                %h3 Start
+                                %h4.color-light-grey
+                                    = campaign.start
+                            .col-xs-4
+                                %h3 End
+                                %h4.color-light-grey
+                                    = campaign.end
+                            .col-xs-4
+                                %h3 Status
+                                %h4.color-light-grey
+                                    = "Closed" if campaign.closed else "Open"
+                            .col-xs-12{align: "center"}
+                                %br
+                                - if current_user and current_user.id != campaign.owner.id
+                                    %a.btn.btn-success.btn-lg{href: "{{=url('donations.add', campaign.id)}}"} Donate
+                    .col-sm-6.col-xs-12{align: "center"}
+                        .row
+                            .col-xs-4
+                                %h3 Donated
+                                %h2.color-light-grey
+                                    = str(pledged)+" €"
+                            .col-xs-4
+                                %h3 Spended
+                                %h2.color-light-grey
+                                    = str(spended)+" €"
+                            .col-xs-4
+                                %h3 Goal
+                                %h2.color-light-grey
+                                    = str(campaign.goal)+" €"
+                            .col-xs-4
+                                %h3 Funded
+                                %h2.color-light-grey
+                                    = str(perc)+" %"
+                            .col-xs-4
+                                %h3 Days
+                                %h2.color-light-grey
+                                    = (campaign.end-current.request.now).days
+                            .col-xs-4
+                                %h3 Bakers
+                                %h2.color-light-grey
+                                    = len(donations)
+                        .row
+                            .col-sm-8.col-sm-offset-2.col-xs-8.col-xs-offset-2{align: "center"}
+                                %br
+                                - if current_user and current_user.id == campaign.owner.id
+                                    %h2 Costs
+                                        = cost_form
+                - if donations:
+                    .card
+                        %script{type: "text/javascript", src: "https://www.google.com/jsapi"}
+                        :javascript
+                            google.load("visualization", "1", {packages:["corechart"]});
+
+                            google.setOnLoadCallback(_gtimer());
+
+                            function _gtimer () {
+                                setTimeout((function() {
+                                    drawChart();
+                                }), 500);
+
+                            }
+
+                            function drawChart() {
+
+                                var data = new google.visualization.DataTable();
+
+                                data.addColumn('string', 'Date'); // Implicit domain label col.
+                                data.addColumn('number', 'Donations'); // Implicit series 1 data col.
+                                data.addColumn({type:'string', role:'annotation'}); // annotation role col.
+                                data.addColumn('number', 'Costs'); // Implicit series 1 data col.
+                                data.addColumn({type:'string', role:'annotation'}); // annotationText col.
+
+                                data.addRows({{=graph(campaign)}});
+
+                                var options = {title: 'Campaign donations'};
+
+                                var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+                                chart.draw(data, options);
+                            }
+                    .row
+                        .col-sm-12.hidden-sm{align: "center"}
+                            #chart_div{style: "width: 900px; height: 500px;"}
+                    .card
+                        .row
+                            .col-xs-12
+                                %h2 Donations:
+                                %table.table.table-hover.table-responsive
+                                    .thead
+                                        .tr
+                                            .th Baker:
+                                            .th Amount:
+                                            .th Date:
+                                    .tbody
+                                        - for donation in donations
+                                            .tr
+                                                .td
+                                                    = donation.donator.first_name+" "+donation.donator.last_name
+                                                .td
+                                                    = donation.amount
+                                                .td
+                                                    = donation.date
+                - if costs
+                    .card
+                        .row
+                            .col-xs-12
+                                %h2 Costs:
+                                %table.table.table-hover.table-responsive
+                                    .thead
+                                        .tr
+                                            .th Title:
+                                            .th Amount:
+                                            .th Date:
+                                    .tbody
+                                        - for cost in costs
+                                            .tr
+                                                .td
+                                                    = cost.name
+                                                .td
+                                                    = cost.amount
+                                                .td
+                                                    = cost.date

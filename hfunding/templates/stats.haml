@@ -1,0 +1,40 @@
+- extend 'layout.haml'
+
+.content
+    .container
+        .row
+            .col-sm-12{align: "center"}
+                %h1 Statistics
+        %br
+        .row
+            .col-sm-6{align: "center"}
+                %h2
+                    = str(total)+" €"
+                %h5 Total euros pledged to campaigns
+            .col-sm-6{align: "center"}
+                %h2
+                    = str(success)+" %"
+                %h5 Successfully funded projects
+        %br
+        %br
+        .card
+            .row
+                .col-xs-12
+                    %h2 Top founded projects
+                    %table.table.table-hover.table-responsive
+                        %thead
+                            %tr
+                                %th Title:
+                                %th Goal:
+                                %th Pledged:
+                        %tbody
+                            - for element in top
+                                %p
+                                    %tr
+                                        %td
+                                            %a{href: "{{=url('campaigns.detail', element.campaigns.id)}}"}
+                                                = element.campaigns.title
+                                        %td
+                                            = element.campaigns.goal
+                                        %td
+                                            = element._extra[mt]
