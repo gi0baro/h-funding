@@ -6,7 +6,7 @@ campaigns = AppModule(app, 'campaigns', __name__, url_prefix='campaigns',
                       template_folder='campaigns')
 
 
-@campaigns.expose('/', template="discover.html")
+@campaigns.expose('/')
 def discover():
     campaigns = db(
         (db.Campaign.start <= request.now) & (db.Campaign.closed == False)
@@ -17,7 +17,7 @@ def discover():
     return dict(campaigns=campaigns, showing='discover')
 
 
-@campaigns.expose(template="discover.html")
+@campaigns.expose(template="discover.haml")
 def all():
     campaigns = db(db.Campaign.start <= request.now).select(
         orderby=~db.Campaign.start,
@@ -26,24 +26,26 @@ def all():
     return dict(campaigns=campaigns, showing='all')
 
 
-@campaigns.expose('/mine', template="mine.html")
+@campaigns.expose('/mine', template="mine.haml")
 @requires(auth.is_logged_in, url('main.account', 'login'))
 def owned():
     campaigns = Campaign.find_owned()
     return locals()
 
 
-@campaigns.expose(template='manage.html')
+@campaigns.expose(template='manage.haml')
 @requires(auth.is_logged_in, url('main.account', 'login'))
 def new():
-    form = Campaign.form()
-    form.input_vars.owner = auth.user.id
+    def set_owner(form):
+        form.vars.owner = auth.user.id
+
+    form = Campaign.form(onvalidation=set_owner)
     if form.accepted:
         redirect(url('main.profile', auth.user.id))
     return locals()
 
 
-@campaigns.expose('/edit/<int:cid>', template='manage.html')
+@campaigns.expose('/edit/<int:cid>', template='manage.haml')
 @requires(auth.is_logged_in, url('main.account', 'login'))
 def edit(cid):
     #form = db.Campaign._form()
@@ -62,14 +64,13 @@ def destroy(cid):
 @campaigns.expose('/<int:cid>')
 def detail(cid):
     def validate_cost(form):
+        form.vars.campaign = campaign.id
         if form.vars.amount > (campaign.pledged()-campaign.spended()):
             form.errors.amount = \
                 "The amount inserted is bigger than the amount pledged."
 
     campaign = db.Campaign(id=cid)
     cost_form = Cost.form(onvalidation=validate_cost)
-    cost_form.vars.campaign = campaign.id
-    #if cost_form.process(keepvalues=True).accepted:
     if cost_form.accepted:
         redirect(url('campaigns.detail', cid))
     return dict(campaign=campaign, cost_form=cost_form, graph=graph_data)

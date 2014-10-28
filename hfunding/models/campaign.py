@@ -23,8 +23,6 @@ class Campaign(Model):
     validators = {
         "title": IS_NOT_EMPTY(),
         "description": IS_NOT_EMPTY(),
-        "start": IS_NOT_EMPTY(),
-        "end": IS_NOT_EMPTY(),
         "goal": IS_INT_IN_RANGE(1, None)
     }
     labels = {

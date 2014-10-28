@@ -18,13 +18,15 @@ def owned():
 @app.expose('/donate/<int:campaign>', template="donate.html")
 @requires(auth.is_logged_in, url('main.account', 'login'))
 def add(campaign):
+    def set_form(form):
+        form.vars.donator = auth.user.id
+        form.vars.campaign = record.id
+
     message = None
     record = db.Campaign(id=campaign)
     if not record:
         message = "Bad campaign id"
-    form = Donation.form()
-    form.vars.donator = auth.user.id
-    form.vars.campaign = record.id
+    form = Donation.form(onvalidation=set_form)
     if form.accepted:
         redirect(url('campaigns.detail', record.id))
     return dict(msg=message, form=form, campaign=record)
