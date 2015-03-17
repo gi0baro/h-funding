@@ -1,4 +1,4 @@
-weppy
+weppy>=0.2
 weppy-Haml
 weppy-Assets
 weppy-BS3

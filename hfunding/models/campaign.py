@@ -1,6 +1,6 @@
-from weppy.dal.models import Model, fieldmethod, modelmethod
-from weppy import Field, session, T
-from weppy.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE
+from weppy import session, T
+from weppy.dal import Field, Model, fieldmethod, modelmethod
+from weppy.validators import isntEmpty, isIntInRange
 
 
 class Campaign(Model):
@@ -21,9 +21,9 @@ class Campaign(Model):
         "closed": (False, False)
     }
     validators = {
-        "title": IS_NOT_EMPTY(),
-        "description": IS_NOT_EMPTY(),
-        "goal": IS_INT_IN_RANGE(1, None)
+        "title": isntEmpty(),
+        "description": isntEmpty(),
+        "goal": isIntInRange(1, None)
     }
     labels = {
         "title": T("Title: ")

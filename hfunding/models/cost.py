@@ -1,6 +1,6 @@
-from weppy.dal.models import Model, modelmethod
-from weppy import Field, session, request
-from weppy.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE
+from weppy import session, request
+from weppy.dal import Field, Model, modelmethod
+from weppy.validators import isntEmpty, isIntInRange
 
 
 class Cost(Model):
@@ -18,8 +18,8 @@ class Cost(Model):
         "date": (False, True)
     }
     validators = {
-        "name": IS_NOT_EMPTY(),
-        "amount": IS_INT_IN_RANGE(1, None)
+        "name": isntEmpty(),
+        "amount": isIntInRange(1, None)
     }
 
     @modelmethod

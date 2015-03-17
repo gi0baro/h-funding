@@ -1,6 +1,6 @@
-from weppy.dal.models import Model, modelmethod
-from weppy import Field, session, request
-from weppy.validators import IS_INT_IN_RANGE
+from weppy import session, request
+from weppy.dal import Field, Model, modelmethod
+from weppy.validators import isIntInRange
 
 
 class Donation(Model):
@@ -19,7 +19,7 @@ class Donation(Model):
         "date": (False, False)
     }
     validators = {
-        "amount": IS_INT_IN_RANGE(1, None)
+        "amount": isIntInRange(1, None)
     }
 
     @modelmethod

@@ -1,5 +1,4 @@
-from weppy import Field
-from weppy.dal.models import AuthModel, fieldmethod
+from weppy.dal import Field, AuthModel, fieldmethod
 
 
 class User(AuthModel):

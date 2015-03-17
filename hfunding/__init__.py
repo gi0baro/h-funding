@@ -1,5 +1,5 @@
-from weppy import App, ModelsDAL
-from weppy.tools import ModelsAuth
+from weppy import App, DAL
+from weppy.tools import Auth
 from weppy.sessions import SessionCookieManager
 
 ## init our app
@@ -21,13 +21,13 @@ from models.donation import Donation
 from models.cost import Cost
 ## init auth before passing db models due to dependencies
 ## on auth tables in the other models
-db = ModelsDAL(app)
-auth = ModelsAuth(
-    app, db, User, mailer=None,
+db = DAL(app)
+auth = Auth(
+    app, db, usermodel=User, mailer=None,
     base_url="/account"
 )
 auth.settings.update(download_url='/download')
-db.define_datamodels([Campaign, Donation, Cost])
+db.define_models([Campaign, Donation, Cost])
 
 ## adding sessions and authorization handlers
 app.expose.common_handlers = [

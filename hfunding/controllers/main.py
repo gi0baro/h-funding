@@ -1,4 +1,5 @@
-from weppy import response, url, stream_file
+from weppy import response, url
+from weppy.helpers import stream_dbfile
 from weppy.tools import requires
 from hfunding import app, db, auth, Campaign, Donation
 
@@ -79,4 +80,4 @@ def stats():
 
 @app.expose("/download/<str:filename>")
 def download(filename):
-    stream_file(db, filename)
+    stream_dbfile(db, filename)
