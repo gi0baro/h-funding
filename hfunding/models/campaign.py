@@ -1,38 +1,32 @@
-from weppy import session, T
-from weppy.dal import Field, Model, fieldmethod, modelmethod
-from weppy.validators import isntEmpty, isIntInRange
+from weppy import T, request
+from weppy.dal import Field, Model, belongs_to, has_many, fieldmethod
 
 
 class Campaign(Model):
-    tablename = "campaigns"
+    belongs_to('user')
+    has_many('donations', 'costs')
 
-    fields = [
-        Field("owner", "reference auth_user"),
-        Field("title", "string"),
-        Field("description", "text"),
-        Field("start", "datetime"),
-        Field("end", "datetime"),
-        Field("goal", "integer"),
-        Field("closed", "boolean", default=True),
-    ]
+    title = Field('string', notnull=True)
+    description = Field('string', notnull=True)
+    start = Field('datetime')
+    end = Field('datetime')
+    goal = Field('int')
+    closed = Field('bool', default=True)
 
-    visibility = {
-        "owner": (False, False),
-        "closed": (False, False)
+    form_rw = {
+        "user": False,
+        "closed": False
     }
-    validators = {
-        "title": isntEmpty(),
-        "description": isntEmpty(),
-        "goal": isIntInRange(1, None)
+
+    validation = {
+        "goal": {'gt': 1},
+        "start": {'gt': lambda: request.now, 'format': "%d/%m/%Y %H:%M:%S"},
+        "end": {'gt': lambda: request.now, 'format': "%d/%m/%Y %H:%M:%S"}
     }
-    labels = {
+
+    form_labels = {
         "title": T("Title: ")
     }
-
-    @fieldmethod('donations')
-    def get_donations(self, row):
-        cid = row.campaigns.id
-        return self.db(self.db.Donation.campaign == cid).select()
 
     @fieldmethod('pledged')
     def get_pledge(self, row):
@@ -42,11 +36,6 @@ class Campaign(Model):
             amount += donation.amount
         return amount
 
-    @fieldmethod('costs')
-    def get_costs(self, row):
-        cid = row.campaigns.id
-        return self.db(self.db.Cost.campaign == cid).select()
-
     @fieldmethod('spended')
     def get_spended(self, row):
         costs = row.campaigns.costs()
@@ -54,11 +43,3 @@ class Campaign(Model):
         for cost in costs:
             amount += cost.amount
         return amount
-
-    @modelmethod
-    def find_owned(db, entity, query=None, owner=None):
-        uid = owner or (session.auth.user.id if session.auth else None)
-        _query = (entity.owner == uid)
-        if query:
-            _query = _query & query
-        return db(_query).select(orderby=~entity.end)

@@ -1,5 +1,7 @@
 - extend 'layout.haml'
 
+- campaigns = user.campaigns()
+- donations = user.donations()
 .content
     .container
         .row
@@ -64,7 +66,7 @@
                                 = campaign.title
                             %h6.color-light-grey
                                 by
-                                = campaign.owner.first_name+" "+campaign.owner.last_name
+                                = campaign.user.first_name+" "+campaign.user.last_name
                             %p.color-light-grey
                                 = campaign.description
                             %h4{align: "center"}

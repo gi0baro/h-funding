@@ -1,31 +1,19 @@
-from weppy import session, request
-from weppy.dal import Field, Model, modelmethod
-from weppy.validators import isntEmpty, isIntInRange
+from weppy import request
+from weppy.dal import Field, Model, belongs_to
 
 
 class Cost(Model):
-    tablename = "costs"
+    belongs_to('campaign')
 
-    fields = [
-        Field("campaign", "reference campaigns"),
-        Field("name", "string"),
-        Field("date", "datetime", default=lambda: request.now),
-        Field("amount", "integer")
-    ]
+    name = Field(notnull=True)
+    date = Field('datetime', default=lambda: request.now)
+    amount = Field('integer')
 
-    visibility = {
-        "campaign": (False, False),
-        "date": (False, True)
-    }
-    validators = {
-        "name": isntEmpty(),
-        "amount": isIntInRange(1, None)
+    form_rw = {
+        "campaign": False,
+        "date": False
     }
 
-    @modelmethod
-    def find_owned(db, entity, query=None, owner=None):
-        uid = owner or (session.auth.user.id if session.auth else None)
-        _query = (entity.donator == uid)
-        if query:
-            _query = _query & query
-        return db(_query).select()
+    validation = {
+        'amount': {'gt': 1}
+    }

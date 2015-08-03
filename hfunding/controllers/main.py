@@ -32,11 +32,9 @@ def users():
 @app.expose("/user/<str:userid>")
 def profile(userid):
     user = db.User(id=userid)
-    campaigns = Campaign.find_owned(owner=user.id)
-    donations = Donation.find_owned(owner=user.id)
     response.meta.title = "HFunding | " + user.first_name + " " + \
         user.last_name + " profile"
-    return dict(user=user, campaigns=campaigns, donations=donations)
+    return dict(user=user)
 
 
 @app.expose()

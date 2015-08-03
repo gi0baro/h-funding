@@ -29,7 +29,7 @@ def all():
 @campaigns.expose('/mine', template="mine.haml")
 @requires(auth.is_logged_in, url('main.account', 'login'))
 def owned():
-    campaigns = Campaign.find_owned()
+    campaigns = auth.user.campaigns()
     return locals()
 
 
@@ -37,7 +37,7 @@ def owned():
 @requires(auth.is_logged_in, url('main.account', 'login'))
 def new():
     def set_owner(form):
-        form.vars.owner = auth.user.id
+        form.vars.user = auth.user.id
 
     form = Campaign.form(onvalidation=set_owner)
     if form.accepted:

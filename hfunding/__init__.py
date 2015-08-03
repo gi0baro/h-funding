@@ -23,11 +23,10 @@ from models.cost import Cost
 ## on auth tables in the other models
 db = DAL(app)
 auth = Auth(
-    app, db, usermodel=User, mailer=None,
-    base_url="/account"
+    app, db, usermodel=User, base_url="account"
 )
 auth.settings.update(download_url='/download')
-db.define_models([Campaign, Donation, Cost])
+db.define_models(Campaign, Donation, Cost)
 
 ## adding sessions and authorization handlers
 app.expose.common_handlers = [
@@ -44,6 +43,7 @@ from weppy_haml import Haml
 from weppy_assets import Assets
 from weppy_bs3 import BS3
 app.config.Haml.set_as_default = True
+app.config.Haml.auto_reload = True
 app.use_extension(Haml)
 app.config.Assets.out_folder = 'gen'
 app.use_extension(Assets)

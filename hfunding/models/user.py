@@ -1,28 +1,21 @@
-from weppy.dal import Field, AuthModel, fieldmethod
+from weppy.dal import Field, has_many, fieldmethod
+from weppy.tools.auth.models import AuthUser
 
 
-class User(AuthModel):
-    fields = [
-        Field("money", "integer", default=0),
-        Field("avatar", "upload", uploadfolder='uploads'),
-    ]
+class User(AuthUser):
+    has_many('campaigns', 'donations')
 
-    profile_visibility = {
-        "avatar": (True, True)
+    money = Field('int', default=0)
+    avatar = Field('upload', uploadfolder='uploads')
+
+    form_profile_rw = {
+        "avatar": True
     }
-
-    @fieldmethod('campaigns')
-    def get_campaigns(self, row):
-        return self.db.Campaign._find_owned(owner=row.auth_user.id)
-
-    @fieldmethod('donations')
-    def get_donations(self, row):
-        return self.db.Donation._find_owned(owner=row.auth_user.id)
 
     @fieldmethod('backed_campaigns')
     def get_backed_campaigns(self, row):
         campaigns = self.db(
-            self.db.Donation.donator == row.auth_user.id
+            self.db.Donation.user == row.users.id
         ).select(
             self.db.Donation.campaign, groupby=self.db.Donation.campaign
         )
@@ -31,8 +24,8 @@ class User(AuthModel):
     @fieldmethod('backed_amount')
     def get_backed_amount(self, row):
         total = self.db.Donation.amount.sum()
-        row = self.db(self.db.Donation.donator == row.auth_user.id).select(
-            total, groupby=self.db.Donation.donator).first()
+        row = self.db(self.db.Donation.user == row.users.id).select(
+            total, groupby=self.db.Donation.user).first()
         if row:
             return row._extra[total]
         return 0
