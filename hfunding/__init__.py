@@ -29,14 +29,11 @@ auth.settings.update(download_url='/download')
 db.define_models(Campaign, Donation, Cost)
 
 ## adding sessions and authorization handlers
-app.expose.common_handlers = [
+app.common_handlers = [
     SessionCookieManager('verySecretKey'),
     db.handler,
     auth.handler
 ]
-
-## exposing functions from controllers
-from controllers import main, campaigns, donations, costs
 
 ## add esxtensions
 from weppy_haml import Haml
@@ -48,6 +45,9 @@ app.use_extension(Haml)
 app.config.Assets.out_folder = 'gen'
 app.use_extension(Assets)
 app.use_extension(BS3)
+
+## exposing functions from controllers
+from controllers import main, campaigns, donations, costs
 
 ## assets
 js_libs = app.ext.Assets.js(
@@ -62,11 +62,6 @@ app.ext.Assets.register('css_all', css)
 
 
 ## commands
-@app.cli.command('routes')
-def print_routing():
-    print app.expose.routes_out
-
-
 @app.cli.command('cron')
 def runcron():
     from datetime import datetime

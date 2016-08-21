@@ -1,5 +1,5 @@
 from weppy import T, request
-from weppy.dal import Field, Model, belongs_to, has_many, fieldmethod
+from weppy.dal import Field, Model, belongs_to, has_many, rowmethod
 
 
 class Campaign(Model):
@@ -28,18 +28,12 @@ class Campaign(Model):
         "title": T("Title: ")
     }
 
-    @fieldmethod('pledged')
+    @rowmethod('pledged')
     def get_pledge(self, row):
-        donations = row.campaigns.donations()
-        amount = 0
-        for donation in donations:
-            amount += donation.amount
-        return amount
+        summed = self.db.Donation.amount.sum()
+        return row.donations(summed).first()[summed] or 0
 
-    @fieldmethod('spended')
+    @rowmethod('spended')
     def get_spended(self, row):
-        costs = row.campaigns.costs()
-        amount = 0
-        for cost in costs:
-            amount += cost.amount
-        return amount
+        summed = self.db.Cost.amount.sum()
+        return row.costs(summed).first()[summed] or 0

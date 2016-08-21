@@ -19,7 +19,7 @@
                 = campaign.title
             %h4.color-light-grey
                 Created by
-                = campaign.owner.first_name+" "+campaign.owner.last_name}}
+                = campaign.user.first_name+" "+campaign.user.last_name
             .row{align: "center"}
                 .col-xs-10.col-xs-offset-1
                 .progress
@@ -58,7 +58,7 @@
                                     = "Closed" if campaign.closed else "Open"
                             .col-xs-12{align: "center"}
                                 %br
-                                - if current_user and current_user.id != campaign.owner.id
+                                - if current_user and current_user.id != campaign.user.id
                                     %a.btn.btn-success.btn-lg{href: "{{=url('donations.add', campaign.id)}}"} Donate
                     .col-sm-6.col-xs-12{align: "center"}
                         .row
@@ -89,7 +89,7 @@
                         .row
                             .col-sm-8.col-sm-offset-2.col-xs-8.col-xs-offset-2{align: "center"}
                                 %br
-                                - if current_user and current_user.id == campaign.owner.id
+                                - if current_user and current_user.id == campaign.user.id
                                     %h2 Costs
                                         = cost_form
                 - if donations:

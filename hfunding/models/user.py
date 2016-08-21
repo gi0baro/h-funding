@@ -1,4 +1,4 @@
-from weppy.dal import Field, has_many, fieldmethod
+from weppy.dal import Field, has_many, rowmethod
 from weppy.tools.auth.models import AuthUser
 
 
@@ -12,20 +12,18 @@ class User(AuthUser):
         "avatar": True
     }
 
-    @fieldmethod('backed_campaigns')
+    @rowmethod('backed_campaigns')
     def get_backed_campaigns(self, row):
-        campaigns = self.db(
-            self.db.Donation.user == row.users.id
-        ).select(
-            self.db.Donation.campaign, groupby=self.db.Donation.campaign
-        )
-        return len(campaigns)
+        count = self.db.Donation.campaign.count()
+        return (
+            row.donations(
+                count, groupby=self.db.Donation.campaign).first() or {}
+        ).get(count) or 0
 
-    @fieldmethod('backed_amount')
+    @rowmethod('backed_amount')
     def get_backed_amount(self, row):
         total = self.db.Donation.amount.sum()
-        row = self.db(self.db.Donation.user == row.users.id).select(
-            total, groupby=self.db.Donation.user).first()
-        if row:
-            return row._extra[total]
-        return 0
+        return (
+            self.db(self.db.Donation.user == row.id).select(
+                total, groupby=self.db.Donation.user).first() or {}
+        ).get(total) or 0

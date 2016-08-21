@@ -1,29 +1,29 @@
 from weppy import url, redirect
 from weppy.tools import requires
-from hfunding import app, db, auth, Donation
+from hfunding import app, auth, Campaign, Donation
 
 
-@app.expose('/donations/<int:campaign>')
+@app.route('/donations/<int:campaign>')
 def of(campaign):
     pass
 
 
-@app.expose('/donations/mine')
+@app.route('/donations/mine')
 @requires(auth.is_logged_in, url('main.account', 'login'))
 def owned():
-    donations = Donation.find_owned()
+    donations = auth.user.donations()
     return dict(donations=donations)
 
 
-@app.expose('/donate/<int:campaign>', template="donate.html")
+@app.route('/donate/<int:campaign>', template="donate.html")
 @requires(auth.is_logged_in, url('main.account', 'login'))
 def add(campaign):
     def set_form(form):
-        form.vars.donator = auth.user.id
-        form.vars.campaign = record.id
+        form.params.user = auth.user.id
+        form.params.campaign = record.id
 
     message = None
-    record = db.Campaign(id=campaign)
+    record = Campaign.get(campaign)
     if not record:
         message = "Bad campaign id"
     form = Donation.form(onvalidation=set_form)
