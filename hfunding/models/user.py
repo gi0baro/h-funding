@@ -1,12 +1,12 @@
-from weppy.dal import Field, has_many, rowmethod
-from weppy.tools.auth.models import AuthUser
+from weppy.orm import Field, has_many, rowmethod
+from weppy.tools.auth import AuthUser
 
 
 class User(AuthUser):
     has_many('campaigns', 'donations')
 
-    money = Field('int', default=0)
-    avatar = Field('upload', uploadfolder='uploads')
+    money = Field.int(default=0)
+    avatar = Field.upload(uploadfolder='uploads')
 
     form_profile_rw = {
         "avatar": True

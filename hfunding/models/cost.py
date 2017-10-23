@@ -1,15 +1,15 @@
-from weppy import request
-from weppy.dal import Field, Model, belongs_to
+from weppy import now
+from weppy.orm import Field, Model, belongs_to
 
 
 class Cost(Model):
     belongs_to('campaign')
 
     name = Field(notnull=True)
-    date = Field('datetime', default=lambda: request.now)
-    amount = Field('integer')
+    date = Field.datetime(default=now)
+    amount = Field.int()
 
-    form_rw = {
+    fields_rw = {
         "campaign": False,
         "date": False
     }

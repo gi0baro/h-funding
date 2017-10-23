@@ -61,16 +61,16 @@ nav ul {
 	text-align: center;
 }
 
-.item { 
-	width: 30%; 
-	margin-right: none; 
+.item {
+	width: 30%;
+	margin-right: none;
 	margin-left: none;
 }
 
 .jumbotron{
 	margin-top: 50px;
 	padding-top: 15%;
-	padding-bottom: 10%; 
+	padding-bottom: 10%;
 	background: url('../images/bg2.jpg');
 	background-size: 100% auto;
 	background-repeat: no-repeat;
@@ -96,7 +96,7 @@ nav ul {
 
 	.grid-sizer { width: 50%; }
 	.item { width: 40%;}
-	
+
 }
 
 
@@ -113,7 +113,7 @@ nav ul {
 		padding-top: 15%;
 		padding-bottom: 20%;
 	}
-	
+
 }
 
 
@@ -134,7 +134,7 @@ nav ul {
 	.grid-sizer { width: 100%; }
 	.item { width: 90%; margin-left: 5%;}
 
-	
+
 }
 
 /*############################*/

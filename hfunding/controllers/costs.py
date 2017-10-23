@@ -1,6 +1,6 @@
 from weppy import url, redirect
 from weppy.tools import requires
-from hfunding import app, auth, Cost, Campaign
+from .. import app, auth, Cost, Campaign
 
 
 @app.route("/costs/<int:campaign>")
@@ -10,7 +10,7 @@ def of(campaign):
 
 
 @app.route("/costs/<int:campaign>/add")
-@requires(auth.is_logged_in, url('main.account', 'login'))
+@requires(auth.is_logged, url('auth.login'))
 def add(campaign):
     def validate(form):
         if form.params.amount > record.pledged():

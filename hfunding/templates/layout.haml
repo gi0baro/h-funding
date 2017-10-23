@@ -57,12 +57,12 @@
                                         %a{href:"{{=url('donations.owned')}}"} My donations
                                     %li.divider
                                     %li
-                                        %a{href:"{{=url('main.account', 'logout')}}"} Sign out
+                                        %a{href:"{{=url('auth.logout')}}"} Sign out
                         - else
                             %li
-                                %a{href:"{{=url('main.account', 'register')}}"} Sign up
+                                %a{href:"{{=url('auth.registration')}}"} Sign up
                             %li
-                                %a{href:"{{=url('main.account', 'login')}}"} Sign in
+                                %a{href:"{{=url('auth.login')}}"} Sign in
         - block center
         - include
         - end

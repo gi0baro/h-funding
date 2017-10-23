@@ -1,27 +1,27 @@
-from weppy import T, request
-from weppy.dal import Field, Model, belongs_to, has_many, rowmethod
+from weppy import T, now
+from weppy.orm import Field, Model, belongs_to, has_many, rowmethod
 
 
 class Campaign(Model):
     belongs_to('user')
     has_many('donations', 'costs')
 
-    title = Field('string', notnull=True)
-    description = Field('string', notnull=True)
-    start = Field('datetime')
-    end = Field('datetime')
-    goal = Field('int')
-    closed = Field('bool', default=True)
+    title = Field(notnull=True)
+    description = Field(notnull=True)
+    start = Field.datetime()
+    end = Field.datetime()
+    goal = Field.int()
+    closed = Field.bool(default=True)
 
-    form_rw = {
+    fields_rw = {
         "user": False,
         "closed": False
     }
 
     validation = {
         "goal": {'gt': 1},
-        "start": {'gt': lambda: request.now, 'format': "%d/%m/%Y %H:%M:%S"},
-        "end": {'gt': lambda: request.now, 'format': "%d/%m/%Y %H:%M:%S"}
+        "start": {'gt': now, 'format': "%d/%m/%Y %H:%M:%S"},
+        "end": {'gt': now, 'format': "%d/%m/%Y %H:%M:%S"}
     }
 
     form_labels = {

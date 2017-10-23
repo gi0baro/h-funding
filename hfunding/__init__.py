@@ -1,12 +1,16 @@
-from weppy import App, DAL
+from weppy import App
+from weppy.orm import Database
 from weppy.tools import Auth
-from weppy.sessions import SessionCookieManager
+from weppy.sessions import SessionManager
 
 ## init our app
 app = App(__name__)
 app.config.static_version = '0.1.0'
 app.config.static_version_urls = True
 app.config.url_default_namespace = "main"
+app.config.auth.hmac_key = "99b2fdd8-3622-4237-9f1b-9ce4445045d9"
+app.config.auth.registration_verification = False
+app.config.auth.single_template = True
 
 ## language settings
 app.languages = ['en', 'it']
@@ -21,18 +25,16 @@ from models.donation import Donation
 from models.cost import Cost
 ## init auth before passing db models due to dependencies
 ## on auth tables in the other models
-db = DAL(app)
-auth = Auth(
-    app, db, usermodel=User, base_url="account"
-)
-auth.settings.update(download_url='/download')
+db = Database(app, auto_migrate=True)
+auth = Auth(app, db, user_model=User)
+# auth.settings.update(download_url='/download')
 db.define_models(Campaign, Donation, Cost)
 
 ## adding sessions and authorization handlers
-app.common_handlers = [
-    SessionCookieManager('verySecretKey'),
-    db.handler,
-    auth.handler
+app.pipeline = [
+    SessionManager.cookies('verySecretKey'),
+    db.pipe,
+    auth.pipe
 ]
 
 ## add esxtensions
@@ -40,14 +42,17 @@ from weppy_haml import Haml
 from weppy_assets import Assets
 from weppy_bs3 import BS3
 app.config.Haml.set_as_default = True
-app.config.Haml.auto_reload = True
+# app.config.Haml.auto_reload = True
 app.use_extension(Haml)
 app.config.Assets.out_folder = 'gen'
 app.use_extension(Assets)
 app.use_extension(BS3)
 
 ## exposing functions from controllers
+auth_routes = auth.module(__name__, url_prefix='account')
+
 from controllers import main, campaigns, donations, costs
+
 
 ## assets
 js_libs = app.ext.Assets.js(

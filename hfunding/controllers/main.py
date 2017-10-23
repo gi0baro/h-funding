@@ -1,7 +1,7 @@
 from weppy import Form, Field, response, url, abort, redirect
 from weppy.helpers import stream_dbfile
 from weppy.tools import requires
-from hfunding import app, db, auth, User, Campaign, Donation
+from .. import app, db, auth, User, Campaign, Donation
 
 
 @app.on_error(404)
@@ -13,13 +13,6 @@ def error_404():
 def welcome():
     response.meta.title = "HFunding"
     return dict()
-
-
-@app.route("/account(/<str:f>)?(/<str:k>)?")
-def account(f, k):
-    response.meta.title = "HFunding | Account"
-    form = auth(f, k)
-    return dict(req=f, form=form)
 
 
 @app.route("/users", template='users.haml')
@@ -39,10 +32,10 @@ def profile(userid):
 
 
 @app.route()
-@requires(auth.is_logged_in, url('main.account', 'login'))
+@requires(auth.is_logged, url('auth.login'))
 def charge():
     response.meta.title = "HFunding | Charge account"
-    form = Form(amount=Field("int"))
+    form = Form(amount=Field.int())
     if form.accepted:
         auth.user.update_record(
             money=auth.user.money + int(form.params.amount))

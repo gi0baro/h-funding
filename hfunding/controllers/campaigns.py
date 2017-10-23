@@ -1,10 +1,9 @@
-from weppy import AppModule, request, url, redirect, asis
+from weppy import request, url, redirect, asis
 from weppy.tools import requires
-from hfunding import app, auth, Campaign, Cost, Donation
+from .. import app, auth, Campaign, Cost, Donation
 
-campaigns = AppModule(
-    app, 'campaigns', __name__, url_prefix='campaigns',
-    template_folder='campaigns')
+campaigns = app.module(
+    __name__, 'campaigns', url_prefix='campaigns', template_folder='campaigns')
 
 
 @campaigns.route('/')
@@ -24,14 +23,14 @@ def all():
 
 
 @campaigns.route('/mine', template="mine.haml")
-@requires(auth.is_logged_in, url('main.account', 'login'))
+@requires(auth.is_logged, url('auth.login'))
 def owned():
     campaigns = auth.user.campaigns()
     return locals()
 
 
 @campaigns.route(template='manage.haml')
-@requires(auth.is_logged_in, url('main.account', 'login'))
+@requires(auth.is_logged, url('auth.login'))
 def new():
     def set_owner(form):
         form.params.user = auth.user.id
@@ -43,7 +42,7 @@ def new():
 
 
 @campaigns.route('/edit/<int:cid>', template='manage.haml')
-@requires(auth.is_logged_in, url('main.account', 'login'))
+@requires(auth.is_logged, url('auth.login'))
 def edit(cid):
     #form = db.Campaign._form()
     #return locals()
@@ -51,7 +50,7 @@ def edit(cid):
 
 
 @campaigns.route('/destroy/<int:cid>')
-@requires(auth.is_logged_in, url('main.account', 'login'))
+@requires(auth.is_logged, url('auth.login'))
 def destroy(cid):
     #form = db.Campaign._form()
     #return locals()

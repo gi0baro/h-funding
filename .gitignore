@@ -8,9 +8,10 @@ Thumbs.db
 /.settings/*
 *.sublime-project
 *.sublime-workspace
+hfunding/databases/*
+hfunding/logs/*.log
 hfunding/uploads/*
 hfunding/private/*
-hfunding/logs/*.log
 hfunding/static/gen/*
 hfunding/static/bs3/*
 hfunding/static/.webassets-cache/*

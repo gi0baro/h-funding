@@ -1,6 +1,6 @@
 from weppy import url, redirect
 from weppy.tools import requires
-from hfunding import app, auth, Campaign, Donation
+from .. import app, auth, Campaign, Donation
 
 
 @app.route('/donations/<int:campaign>')
@@ -9,14 +9,14 @@ def of(campaign):
 
 
 @app.route('/donations/mine')
-@requires(auth.is_logged_in, url('main.account', 'login'))
+@requires(auth.is_logged, url('auth.login'))
 def owned():
     donations = auth.user.donations()
     return dict(donations=donations)
 
 
 @app.route('/donate/<int:campaign>', template="donate.html")
-@requires(auth.is_logged_in, url('main.account', 'login'))
+@requires(auth.is_logged, url('auth.login'))
 def add(campaign):
     def set_form(form):
         form.params.user = auth.user.id
